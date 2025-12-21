@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>點擊方塊遊戲</title>
+  <style>
+#instructions {
+  position: absolute;      /* 浮在頁面上，不占原本布局空間 */
+  top: 60%;               /* 距離頁面上方 50px，可自行調整 */
+  left: 50%;               /* 水平置中 */
+  transform: translate(-50%, -50%); /* 水平置中修正 */
+  background-color: #fff8dc;
+  padding: 20px 25px;
+  border: 1px solid #dadba3;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  z-index: 100;            /* 蓋在遊戲上方 */
+  width: 360px;
+  text-align: left;
+  display:none;
+  
+  }
+  
+
+
+
+.center-text {
+  text-align: left;
+}
+
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      transition: background-color 0.5s ease;
+    }
+
+    #game-area {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      margin: 20px auto;
+      background-color: #f2f2f2;
+      border: 2px solid #333;
+      overflow: hidden;
+    }
+
+    #box {
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      position: absolute;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: left 0.4s ease, top 0.4s ease; /* 平滑移動動畫 */
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      margin: 10px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+        /* +1 浮動 */
+    #time-container {
+      position: relative; /* 讓 plus-one 的絕對定位相對於這個容器 */
+      display: inline-block;
+    }
+
+    .plus-one {
+      position: absolute;
+      top: 0;
+      left: 100%;       /* 在時間數字右側 */
+      margin-left: 8px; /* 與文字留一點距離 */
+      font-size: 28px;
+      font-weight: bold;
+      color: #ffeb3b;
+      text-shadow: 0 0 10px #ffeb3b, 0 0 20px #ff9800;
+      pointer-events: none;
+      animation: floatUp 1s ease-out forwards;
+    }
+
+@keyframes floatUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+
+  </style>
+</head>
+<body>
+  <h1>分數：<span id="score">0</span></h1>
+  <h2 id="time-container">倒數時間：<span id="time">10</span> 秒</h2>
+  <h2>遊戲時間：<span id="operate">0</span> 秒</h2>
+  <button id="start-btn">開始遊戲</button>
+  <button id="restart-btn" style="display:none;">重新開始</button>
+  <button id="toggle-instructions">查看說明</button>
+  <div id="game-area">
+  <div id="box"></div>
+  </div>
+  
+  <div id="instructions">
+    <h3>🎮遊戲說明</h3>
+    <ul>
+      <li class="center-text">點擊方塊獲得分數</li>
+      <li class="center-text">每點擊7次，剩餘時間會+1!</li>
+      <li class="center-text">盡可能獲得分數吧!</li>
+    </ul>
+    <h3>Enjoy your game!</h3>
+
+  </div>
+  
+
+  
+
+  <script>
+    const box = document.getElementById("box");
+    const scoreDisplay = document.getElementById("score");
+    const timeDisplay = document.getElementById("time");
+    const operateDisplay = document.getElementById("operate");
+    const startBtn = document.getElementById("start-btn");
+    const restartBtn = document.getElementById("restart-btn");
+    const area = document.getElementById("game-area");
+    
+
+    let score = 0;
+    let time = 10;
+    let operate = 0;
+    let timer, operateTimer;
+    let gameActive = false;
+
+
+    const toggleBtn = document.getElementById("toggle-instructions");
+    const instructions = document.getElementById("instructions");
+//說明頁面開關
+toggleBtn.addEventListener("click", () => {
+  if (instructions.style.display === "none" || instructions.style.display === "") {
+    instructions.style.display = "block"; // 顯示說明
+    toggleBtn.textContent = "❌ 關閉說明";
+  } else {
+    instructions.style.display = "none";  // 隱藏說明
+    toggleBtn.textContent = "查看說明";
+  }
+});
+
+
+    const maxX = () => area.clientWidth - box.clientWidth;
+    const maxY = () => area.clientHeight - box.clientHeight;
+
+    // ✅ 平滑移動到隨機位置
+    function moveBox() {
+      const newX = Math.random() * maxX();
+      const newY = Math.random() * maxY();
+      box.style.left = `${newX}px`;
+      box.style.top = `${newY}px`;
+    }
+    function showPlusOne() {
+  const plus = document.createElement("div");
+  plus.textContent = "+1";
+  plus.className = "plus-one";
+   const timeDisplay = document.getElementById("time");
+  timeDisplay.parentElement.appendChild(plus); // 放在倒數時間那一行旁邊
+
+
+  
+  
+
+  // 0.8 秒後移除元素
+  setTimeout(() => area.removeChild(plus), 800);
+}
+    function changeColor() {
+      box.style.backgroundColor = `hsl(${score * 30 % 360}, 100%, 50%)`;
+    }
+
+    function changeBackground() {
+      document.body.style.backgroundColor = `hsl(${score * 30 % 360}, 100%, 85%)`;
+    }
+
+    function startGame() {
+      if (gameActive) return;
+      gameActive = true;
+      document.getElementById("instructions").style.display = "none";
+      startBtn.style.display = "none";
+      restartBtn.style.display = "none";
+      box.style.display = "block";
+
+      // 初始化
+      score = 0;
+      time = 10;
+      operate = 0;
+      box.style.backgroundColor = "red";
+      document.body.style.backgroundColor = "#f8f8f8";
+      scoreDisplay.textContent = score;
+      timeDisplay.textContent = time;
+      operateDisplay.textContent = operate;
+
+      // 起始位置
+      moveBox();
+
+      // 倒數
+      timer = setInterval(() => {
+        time--;
+        timeDisplay.textContent = time;
+        if (time <= 0) endGame();
+      }, 1000);
+
+      // 遊戲時間
+      operateTimer = setInterval(() => {
+        operate++;
+        operateDisplay.textContent = operate;
+      }, 1000);
+    }
+
+    function endGame() {
+      clearInterval(timer);
+      clearInterval(operateTimer);
+      gameActive = false;
+      alert(`⏰ 時間到！你的分數是 ${score}`);
+      box.style.display = "none";
+      restartBtn.style.display = "inline-block";
+    }
+
+    function restartGame() {
+      startGame();
+    }
+    box.addEventListener("click", () => {
+  if (!gameActive) return;
+  scoreDisplay.textContent = score;
+  changeColor();
+
+  if (score % 7 === 0) {
+    time++;
+    timeDisplay.textContent = time;
+    showPlusOne(); // ✅ 增加特效
+  }
+
+  if (score % 10 === 0) changeBackground();
+  moveBox();
+});
+
+
+    // ✅ 點擊方塊：滑動改變位置、加分、延時
+    box.addEventListener("click", () => {
+      if (!gameActive) return;
+      score++;
+      scoreDisplay.textContent = score;
+      changeColor();
+      
+  
+
+
+      if (score % 10 === 0) changeBackground();
+      if (score % 3 === 0) time++;
+
+      // 移動方塊（滑過去而非消失）
+      moveBox();
+    });
+
+    startBtn.addEventListener("click", startGame);
+    restartBtn.addEventListener("click", restartGame);
+  </script>
+</body>
+</html>

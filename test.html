@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>Emoji 小鹿遊戲 - 爆炸動畫</title>
+<style>
+  body {
+    margin: 0;
+    background: #cce6ff;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+  }
+
+  #game {
+    position: relative;
+    width: 800px;
+    height: 200px;
+    margin: 50px auto;
+    border: 2px solid #333;
+    background: #cce6ff;
+    overflow: hidden;
+    font-size: 50px;
+  }
+
+  #deer {
+    position: absolute;
+    bottom: 0;
+    left: 700px;
+  }
+
+  .bomb, .explosion {
+    position: absolute;
+    bottom: 0;
+  }
+
+  #chicken {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    transform: scaleX(-1);
+  }
+
+  #score {
+    text-align: center;
+    font-size: 24px;
+    margin-top: 20px;
+  }
+
+  @keyframes explode {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(2); opacity: 0.8; }
+    100% { transform: scale(3); opacity: 0; }
+  }
+
+  .explosion {
+    animation: explode 0.5s forwards;
+  }
+</style>
+</head>
+<body>
+
+<div id="game">
+  <div id="chicken">🐔</div>
+  <div id="deer">🦌</div>
+</div>
+<div id="score">分數: 0</div>
+
+<script>
+const deer = document.getElementById('deer');
+const game = document.getElementById('game');
+const scoreEl = document.getElementById('score');
+
+let deerBottom = 0;
+let jumpVelocity = 0;
+let gravity = 0.5;
+let isJumping = false;
+
+let score = 0;
+let gameSpeed = 7;
+let obstacles = [];
+let gameOver = false;
+
+document.addEventListener('keydown', (e) => {
+  if ((e.key === ' ' || e.key === 'Spacebar') && !isJumping) {
+    jump();
+  }
+});
+
+function jump() {
+  isJumping = true;
+  jumpVelocity = 16;
+}
+
+function gameLoop() {
+  if (gameOver) return;
+
+  // 更新鹿位置
+  if (isJumping || deerBottom > 0) {
+    deerBottom += jumpVelocity;
+    jumpVelocity -= gravity;
+    if (deerBottom <= 0) {
+      deerBottom = 0;
+      isJumping = false;
+      jumpVelocity = 0;
+    }
+    deer.style.bottom = deerBottom + 'px';
+  }
+
+  // 更新炸彈位置
+  obstacles.forEach((bomb, index) => {
+    let left = parseFloat(bomb.style.left);
+    left += gameSpeed;
+    bomb.style.left = left + 'px';
+
+    // 碰撞偵測
+    const deerRect = deer.getBoundingClientRect();
+    const bombRect = bomb.getBoundingClientRect();
+    if (
+      deerRect.left < bombRect.right &&
+      deerRect.right > bombRect.left &&
+      deerRect.bottom > bombRect.top &&
+      deerRect.top < bombRect.bottom
+    ) {
+      // 顯示爆炸動畫
+      const explosion = document.createElement('div');
+      explosion.className = 'explosion';
+      explosion.style.left = bomb.style.left;
+      explosion.style.bottom = bomb.style.bottom;
+      explosion.innerText = '💥';
+      game.appendChild(explosion);
+
+      // 移除炸彈
+      game.removeChild(bomb);
+      obstacles.splice(index, 1);
+
+      // 等動畫完成再結束遊戲
+      setTimeout(() => {
+        endGame();
+      }, 500);
+    }
+
+    if (left > game.offsetWidth) {
+      game.removeChild(bomb);
+      obstacles.splice(index, 1);
+      score++;
+      scoreEl.textContent = '分數: ' + score;
+      if (score % 5 === 0) gameSpeed += 0.5;
+    }
+  });
+
+  requestAnimationFrame(gameLoop);
+}
+
+function createObstacle() {
+  if (gameOver) return;
+
+  const bomb = document.createElement('div');
+  bomb.classList.add('bomb');
+  bomb.innerText = '💣';
+  bomb.style.left = '0px';
+  game.appendChild(bomb);
+  obstacles.push(bomb);
+
+  const randomTime = Math.random() * 1500 + 500;
+  setTimeout(createObstacle, randomTime);
+}
+
+function endGame() {
+  gameOver = true;
+  alert('遊戲結束！分數: ' + score);
+  location.reload();
+}
+
+createObstacle();
+gameLoop();
+</script>
+
+</body>
+</html>
