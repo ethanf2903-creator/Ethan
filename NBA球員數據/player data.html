@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>NBA 球員資料</title>
+  <style>
+    table {
+      width: 80%;
+      border-collapse: collapse;
+      margin: 20px auto;
+      border-radius: 5px;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 8px 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    select {
+      display: block;
+      margin: 20px auto;
+      padding: 5px 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2 style="text-align:center;">NBA 球員資料</h2>
+
+  <!-- 下拉選單 -->
+  <select id="playerSelect">
+    <option value="All">全部球員</option>
+  </select>
+
+  <table id="playersTable">
+    <thead>
+      <tr>
+        <th>姓名</th>
+        <th>號碼</th>
+        <th>位置</th>
+        <th>平均得分 (PPG)</th>
+        <th>助攻</th>
+        <th>抄截</th>
+        <th>阻攻</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- 球員資料會由 JavaScript 動態填入 -->
+    </tbody>
+  </table>
+
+  <script>
+    let allPlayers = [];
+
+    // 讀取 JSON
+    fetch("player data.json")
+      .then(res => res.json())
+      .then(data => {
+        allPlayers = data;
+        populatePlayerSelect(data);
+        displayPlayers(data); // 初始顯示全部
+      });
+
+    // 生成球員下拉選單
+    function populatePlayerSelect(data) {
+      const select = document.getElementById("playerSelect");
+      data.forEach(player => {
+        const option = document.createElement("option");
+        option.value = player.name;
+        option.textContent = player.name;
+        select.appendChild(option);
+      });
+
+      // 選擇球員時，更新表格
+      select.addEventListener("change", () => {
+        const selectedPlayer = select.value;
+        if (selectedPlayer === "All") {
+          displayPlayers(allPlayers);
+        } else {
+          displayPlayers(allPlayers.filter(p => p.name === selectedPlayer));
+        }
+      });
+    }
+
+    // 顯示球員資料
+    function displayPlayers(players) {
+      const tbody = document.querySelector("#playersTable tbody");
+      tbody.innerHTML = ""; // 先清空
+      players.forEach(player => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${player.name}</td>
+          <td>${player.number}</td>
+          <td>${player.position}</td>
+          <td>${player.ppg}</td>
+          <td>${player.assists}</td>
+          <td>${player.steals}</td>
+          <td>${player.blocks}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+  </script>
+
+</body>
+</html>

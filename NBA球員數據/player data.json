@@ -1,0 +1,167 @@
+[
+  {
+    "name": "Stephen Curry",
+    "team": "GSW",
+    "position": "G",
+    "number": "30",
+    "ppg": "28.4",
+    "assists": "4.3",
+    "steals": "1.27",
+    "blocks": "0.45",
+    "": ""
+  },
+  {
+    "name": "Jimmy Butler",
+    "team": "GSW",
+    "position": "F",
+    "number": "10",
+    "ppg": "19.7",
+    "assists": "4.9",
+    "steals": "1.44",
+    "blocks": "0.26",
+    "": ""
+  },
+  {
+    "name": "Brandin Podziemski",
+    "team": "GSW",
+    "position": "G",
+    "number": "2",
+    "ppg": "12.4",
+    "assists": "3.3",
+    "steals": "1.13",
+    "blocks": "0.19",
+    "": ""
+  },
+  {
+    "name": "Moses Moody",
+    "team": "GSW",
+    "position": "G",
+    "number": "4",
+    "ppg": "11.4",
+    "assists": "1.7",
+    "steals": "0.93",
+    "blocks": "0.72",
+    "": ""
+  },
+  {
+    "name": "Quinten Post",
+    "team": "GSW",
+    "position": "C",
+    "number": "21",
+    "ppg": "7.8",
+    "assists": "1.5",
+    "steals": "0.58",
+    "blocks": "0.58",
+    "": ""
+  },
+  {
+    "name": "Buddy Hield",
+    "team": "GSW",
+    "position": "G",
+    "number": "7",
+    "ppg": "7.7",
+    "assists": "1.5",
+    "steals": "0.79",
+    "blocks": "0.07",
+    "": ""
+  },
+  {
+    "name": "Jonathan Kuminga",
+    "team": "GSW",
+    "position": "F",
+    "number": "1",
+    "ppg": "11.8",
+    "assists": "2.6",
+    "steals": "0.28",
+    "blocks": "0.33",
+    "": ""
+  },
+  {
+    "name": "Will Richard",
+    "team": "GSW",
+    "position": "G",
+    "number": "3",
+    "ppg": "8",
+    "assists": "1",
+    "steals": "0.88",
+    "blocks": "0.04",
+    "": ""
+  },
+  {
+    "name": "Draymond Green",
+    "team": "GSW",
+    "position": "F",
+    "number": "23",
+    "ppg": "8",
+    "assists": "5",
+    "steals": "0.88",
+    "blocks": "0.84",
+    "": ""
+  },
+  {
+    "name": "Gary Payton",
+    "team": "GSW",
+    "position": "G",
+    "number": "0",
+    "ppg": "4",
+    "assists": "1.8",
+    "steals": "0.62",
+    "blocks": "0.28",
+    "": ""
+  },
+  {
+    "name": "Trayce Jackson-Davis",
+    "team": "GSW",
+    "position": "F",
+    "number": "32",
+    "ppg": "4.6",
+    "assists": "1.1",
+    "steals": "0.33",
+    "blocks": "0.71",
+    "": ""
+  },
+  {
+    "name": "Al Horford",
+    "team": "GSW",
+    "position": "C-F",
+    "number": "20",
+    "ppg": "6.2",
+    "assists": "2",
+    "steals": "1.07",
+    "blocks": "0.93",
+    "": ""
+  },
+  {
+    "name": "Gui Santos",
+    "team": "GSW",
+    "position": "F",
+    "number": "15",
+    "ppg": "3.3",
+    "assists": "0.7",
+    "steals": "0.39",
+    "blocks": "0.09",
+    "": ""
+  },
+  {
+    "name": "De'Anthony Melton",
+    "team": "GSW",
+    "position": "G",
+    "number": "8",
+    "ppg": "7.5",
+    "assists": "2.1",
+    "steals": "1.63",
+    "blocks": "0.63",
+    "": ""
+  },
+  {
+    "name": "Seth Curry",
+    "team": "GSW",
+    "position": "G",
+    "number": "31",
+    "ppg": "7",
+    "assists": "1.5",
+    "steals": "1",
+    "blocks": "0",
+    "": ""
+  }
+]

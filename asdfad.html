@@ -45,6 +45,10 @@
         linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
+      /* 添加標準 mask 屬性以提升相容性 */
+      mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
       pointer-events: none; /* 讓點擊仍能點到按鈕 */
     }
 
