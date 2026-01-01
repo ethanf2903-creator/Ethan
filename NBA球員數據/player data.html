@@ -4,34 +4,26 @@
   <meta charset="UTF-8">
   <title>NBA 球員資料</title>
   <style>
-    table {
-      width: 80%;
-      border-collapse: collapse;
-      margin: 20px auto;
-      border-radius: 5px;
-    }
-    th, td {
-      border: 1px solid #333;
-      padding: 8px 12px;
-      text-align: center;
-    }
-    th {
-      background-color: #f0f0f0;
-    }
-    select {
-      display: block;
-      margin: 20px auto;
-      padding: 5px 10px;
-      font-size: 16px;
-    }
+    /* ... 保持您原有的 CSS ... */
+    h2{ font-size: 2em; color: #333; margin-bottom: 20px; text-align: center; }
+    table { width: 80%; border-collapse: collapse; margin: 20px auto; border: 3px groove black; background-color: white; border-radius: 12px; overflow: hidden; display: none; }
+    th, td { border: 1px solid #333; padding: 8px 12px; text-align: center; font-weight: 500; font-size: 14px; }
+    th { background-color: #1e3a8a; color: white; }
+    select { display: block; margin: 20px auto; padding: 5px 10px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    tbody tr:hover { background-color: #e0f7fa; }
+    body { background: #f0f4f8; font-family: sans-serif; }
   </style>
 </head>
 <body>
+    
+  <h2>NBA 球員資料</h2>
 
-  <h2 style="text-align:center;">NBA 球員資料</h2>
+  <select id="teamSelect">
+    <option value="">請選擇球隊</option>
+  </select>
 
-  <!-- 下拉選單 -->
   <select id="playerSelect">
+    <option value="" selected>請選擇球員</option>
     <option value="All">全部球員</option>
   </select>
 
@@ -47,63 +39,101 @@
         <th>阻攻</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- 球員資料會由 JavaScript 動態填入 -->
-    </tbody>
+    <tbody></tbody>
   </table>
 
-  <script>
-    let allPlayers = [];
+<script>
+  let allPlayers = [];
 
-    // 讀取 JSON
-    fetch("player data.json")
-      .then(res => res.json())
-      .then(data => {
-        allPlayers = data;
-        populatePlayerSelect(data);
-        displayPlayers(data); // 初始顯示全部
-      });
+  // 1. 讀取資料 (這裡假設您的資料放在 player data.json)
+  fetch("player data.json")
+    .then(res => res.json())
+    .then(data => {
+      allPlayers = data;
+      populateTeams(data);
+    })
+    .catch(error => console.error("載入資料失敗:", error));
 
-    // 生成球員下拉選單
-    function populatePlayerSelect(data) {
-      const select = document.getElementById("playerSelect");
-      data.forEach(player => {
-        const option = document.createElement("option");
-        option.value = player.name;
-        option.textContent = player.name;
-        select.appendChild(option);
-      });
+  // 2. 生成球隊選單
+  function populateTeams(data) {
+    const teamSelect = document.getElementById("teamSelect");
+    const teams = [...new Set(data.map(player => player.team))];
+    teams.forEach(team => {
+      const option = document.createElement("option");
+      option.value = team;
+      option.textContent = team;
+      teamSelect.appendChild(option);
+    });
+  }
 
-      // 選擇球員時，更新表格
-      select.addEventListener("change", () => {
-        const selectedPlayer = select.value;
-        if (selectedPlayer === "All") {
-          displayPlayers(allPlayers);
-        } else {
-          displayPlayers(allPlayers.filter(p => p.name === selectedPlayer));
-        }
-      });
+  // 3. 生成球員選單 (根據球隊篩選)
+  function populatePlayerSelect(data, selectedTeam) {
+    const select = document.getElementById("playerSelect");
+    select.innerHTML = '<option value="" selected>請選擇球員</option><option value="All">全部球員</option>';
+    
+    // 如果沒選球隊，就顯示全部球員供選擇；有選球隊就篩選
+    const filtered = selectedTeam ? data.filter(p => p.team === selectedTeam) : data;
+    
+    filtered.forEach(player => {
+      const option = document.createElement("option");
+      option.value = player.name;
+      option.textContent = player.name;
+      select.appendChild(option);
+    });
+  }
+
+  // 4. 當球隊改變時
+  document.getElementById("teamSelect").addEventListener("change", (e) => {
+    const team = e.target.value;
+    populatePlayerSelect(allPlayers, team);
+    document.getElementById("playersTable").style.display = "none"; // 切換球隊時先隱藏表格
+  });
+
+  // 5. 當球員改變時 (包含選「全部球員」的邏輯)
+  document.getElementById("playerSelect").addEventListener("change", (e) => {
+    const selectedPlayer = e.target.value;
+    const selectedTeam = document.getElementById("teamSelect").value;
+    const table = document.getElementById("playersTable");
+
+    if (selectedPlayer === "") {
+      table.style.display = "none";
+      return;
     }
 
-    // 顯示球員資料
-    function displayPlayers(players) {
-      const tbody = document.querySelector("#playersTable tbody");
-      tbody.innerHTML = ""; // 先清空
-      players.forEach(player => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${player.name}</td>
-          <td>${player.number}</td>
-          <td>${player.position}</td>
-          <td>${player.ppg}</td>
-          <td>${player.assists}</td>
-          <td>${player.steals}</td>
-          <td>${player.blocks}</td>
-        `;
-        tbody.appendChild(row);
-      });
+    table.style.display = "table";
+    
+    let displayList = [];
+    if (selectedPlayer === "All") {
+      // 關鍵：如果選「全部」，根據是否有球隊來過濾
+      displayList = selectedTeam 
+        ? allPlayers.filter(p => p.team === selectedTeam) 
+        : allPlayers;
+    } else {
+      // 選單一球員
+      displayList = allPlayers.filter(p => p.name === selectedPlayer);
     }
-  </script>
+    
+    renderTable(displayList);
+  });
+
+  // 6. 渲染表格
+  function renderTable(players) {
+    const tbody = document.querySelector("#playersTable tbody");
+    tbody.innerHTML = "";
+    players.forEach(player => {
+      const row = `<tr>
+        <td>${player.name}</td>
+        <td>${player.number}</td>
+        <td>${player.position}</td>
+        <td>${player.ppg}</td>
+        <td>${player.assists}</td>
+        <td>${player.steals}</td>
+        <td>${player.blocks}</td>
+      </tr>`;
+      tbody.insertAdjacentHTML('beforeend', row);
+    });
+  }
+</script>
 
 </body>
 </html>

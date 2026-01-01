@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NBA 球員資料</title>
+ <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    
+    body {
+       background-color: var(--bg-color);
+  font-family: var(--font-content); /* 預設內容字體 */
+  margin: 0;
+  color: #333;
+      
+    }
+    :root {
+  /* 預設顏色 (NBA 藍) */
+  --theme-bg: #1d428a;
+  --theme-accent: #ffffff;
+  --body-bg: #f0f4f8;
+  --bg-color: #f4f7f9;        /* 淺灰藍背景 */
+  --card-bg: #ffffff;         /* 純白卡片 */
+  --font-header: 'Oswald', sans-serif;
+  --font-content: 'Montserrat', sans-serif;
+}
+
+    h2 {
+        margin: 0;
+      text-align: center;
+      padding: 30px 0;
+      background-color: var(--theme-bg);
+      color: var(--theme-accent);
+      transition: all 0.5s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      font-family: var(--font-header);
+  font-weight: 700;
+  letter-spacing: 2px; /* 字母間距拉開，更有設計感 */
+  text-transform: uppercase; /* 強制大寫，更有運動氣息 */
+    }
+
+    /* === 選單區域 === */
+    .controls {
+  display: flex;
+  justify-content: center; /* 靠右對齊 */
+  padding-right: 50px;       /* 離右邊界一點距離 */
+  margin-top: 10px;
+  margin-left: 3px;
+}
+    select {
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 2px solid #dfe3e8;
+      background-color: white;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    select:hover, select:focus {
+      border-color: #1d428a;
+      outline: none;
+    }
+
+    /* === 核心：卡片網格容器 (取代原本的 Table) === */
+    #playersGrid {
+      display: grid;
+      /* 關鍵：自動填滿，最小寬度 260px，最大 1fr (等分) */
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 25px; /* 卡片之間的間距 */
+      max-width: 1200px;
+      margin: 0 auto; /* 居中 */
+      display: none; /* 初始隱藏 */
+    }
+
+    /* === 核心：單張球員卡片設計 === */
+    .player-card {
+      background: white;
+      border-radius: 16px; /* 圓角 */
+      padding: 20px;
+      position: relative; /* 為了讓背號絕對定位 */
+      overflow: hidden; /* 隱藏超出的背號 */
+      border-top: 6px solid var(--theme-bg);
+      margin-top: 10px;
+      
+      /* 視覺加分重點：立體陰影 */
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08), 0 6px 6px rgba(0,0,0,0.05);
+      
+      /* 頂部裝飾條顏色 */
+     
+      
+      /* 視覺加分重點：平滑過渡動畫 */
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    /* === 視覺加分重點：滑鼠懸停特效 === */
+    .player-card:hover {
+      transform: translateY(-10px); /* 向上浮起 */
+      box-shadow: 0 20px 30px rgba(0,0,0,0.15), 0 10px 10px rgba(0,0,0,0.1); /* 陰影變深變大 */
+    }
+
+    /* 背景的大背號裝飾 */
+    .card-bg-number {
+      position: absolute;
+      top: -15px;
+      right: 10px;
+      font-size: 5em;
+      font-weight: 900;
+      color: rgba(0,0,0,0.04); /* 非常淡的灰色 */
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* 卡片內容層 */
+    .card-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 球員頭部資訊 */
+    .player-header {
+      margin-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 10px;
+    }
+
+    .player-name {
+     font-family: var(--font-header);
+  font-size: 1.6em;
+  font-weight: 700;
+  text-transform: uppercase;
+    }
+
+    .player-team-pos {
+      color: #666;
+      font-size: 0.9em;
+      margin-top: 5px;
+      font-weight: 500;
+    }
+
+    /* 數據列表 */
+    .stat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .stat-label {
+      color: #888;
+      font-family: var(--font-content);
+  font-weight: 400;
+  letter-spacing: 1px;
+    }
+
+    .stat-value {
+      font-size: 1.1em;
+      font-weight: 700;
+      color: var(--theme-bg); 
+      font-family: var(--font-header); /* 數字用 Oswald 會非常像計分板 */
+  font-size: 1.2em;
+
+    }
+
+    /* 特殊數據強調 (例如得分) */
+    .stat-row.highlight .stat-value {
+      font-size: 1.3em;
+      color: #c8102e; /* 紅色強調 */
+    }
+    /* 進度條外框 */
+.stat-bar-container {
+  width: 100px; /* 固定寬度 */
+  height: 8px;
+  background-color: #e0e0e0; /* 淺灰色底 */
+  border-radius: 4px;
+  overflow: hidden;
+  margin-left: 10px;
+}
+
+/* 進度條填充部分 */
+.stat-bar-fill {
+  height: 100%;
+  background-color: var(--theme-bg); /* 跟隨球隊主題色 */
+  border-radius: 4px;
+  transition: width 1s ease-out; /* 增加載入時的動畫感 */
+}
+
+/* 讓數據列變成橫向排列，好放進度條 */
+.stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.stat-info {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+  </style>
+</head>
+<body>
+    
+  <h2>NBA 球員資料</h2>
+
+  <div class="controls">
+    <select id="teamSelect">
+      <option value="">請選擇球隊</option>
+    </select>
+    <select id="playerSelect">
+      <option value="" selected>請選擇球員</option>
+    </select>
+  </div>
+
+  <div id="playersGrid">
+  </div>
+
+  <script>
+    let allPlayers = []; // 建立一個空的變數來存資料
+
+    // 1. 改回讀取你的 JSON 檔案
+    fetch("player data.json")
+      .then(res => res.json())
+      .then(data => {
+        allPlayers = data; // 將讀取到的 30 多位球員存入
+        populateTeams(allPlayers);
+        populatePlayerSelect(allPlayers);
+      })
+      .catch(error => console.error("載入資料失敗:", error));
+
+    // --- 以下功能維持不變 ---
+
+    function populateTeams(data) {
+      const teamSelect = document.getElementById("teamSelect");
+      const teams = [...new Set(data.map(player => player.team))];
+      teams.forEach(team => {
+        const option = document.createElement("option");
+        option.value = team;
+        option.textContent = team;
+        teamSelect.appendChild(option);
+      });
+    }
+
+    function populatePlayerSelect(data, selectedTeam = null) {
+      const select = document.getElementById("playerSelect");
+      select.innerHTML = '<option value="" selected>請選擇球員</option><option value="All">全部球員</option>';
+      const filtered = selectedTeam ? data.filter(p => p.team === selectedTeam) : data;
+      filtered.forEach(player => {
+        const option = document.createElement("option");
+        option.value = player.name;
+        option.textContent = player.name;
+        select.appendChild(option);
+      });
+    }
+
+    document.getElementById("teamSelect").addEventListener("change", (e) => {
+      const team = e.target.value;
+      const theme = teamThemes[team] || teamThemes["Default"];
+      document.documentElement.style.setProperty('--theme-bg', theme.bg);
+  document.documentElement.style.setProperty('--theme-accent', theme.accent);
+      populatePlayerSelect(allPlayers, team);
+      document.getElementById("playersGrid").style.display = "none"; 
+      document.getElementById("playerSelect").value = ""; 
+    });
+
+    document.getElementById("playerSelect").addEventListener("change", (e) => {
+      const selectedPlayer = e.target.value;
+      const selectedTeam = document.getElementById("teamSelect").value;
+      const grid = document.getElementById("playersGrid");
+
+      if (selectedPlayer === "") {
+        grid.style.display = "none";
+        return;
+      }
+
+      grid.style.display = "grid"; 
+      
+      let displayList = [];
+      if (selectedPlayer === "All") {
+        displayList = selectedTeam ? allPlayers.filter(p => p.team === selectedTeam) : allPlayers;
+      } else {
+        displayList = allPlayers.filter(p => p.name === selectedPlayer);
+      }
+      
+      renderCards(displayList);
+    });
+
+    function renderCards(players) {
+  const grid = document.getElementById("playersGrid");
+  grid.innerHTML = ""; 
+  
+  players.forEach(player => {
+    const theme = teamThemes[player.team] || teamThemes["Default"];
+    const teamColor = theme.bg;
+
+    // 計算百分比 (設定合理的 NBA 最大值)
+    const ppgPercent = Math.min((parseFloat(player.ppg) / 35) * 100, 100);
+    const apgPercent = Math.min((parseFloat(player.assists) / 12) * 100, 100);
+    const spgPercent = Math.min((parseFloat(player.steals) / 3) * 100, 100);   // 抄截以 3 為 100%
+    const bpgPercent = Math.min((parseFloat(player.blocks) / 4) * 100, 100);   // 阻攻以 4 為 100%
+
+    const cardHTML = `
+      <div class="player-card" style="border-top-color: ${teamColor}">
+        <div class="card-bg-number" style="color: ${teamColor}; opacity: 0.05;">${player.number}</div>
+        <div class="card-content">
+          <div class="player-header">
+            <h3 class="player-name">${player.name}</h3>
+            <div class="player-team-pos">${player.team} | ${player.position}</div>
+          </div>
+          <div class="stat-list">
+            
+            <div class="stat-row highlight">
+              <div class="stat-info">
+                <span class="stat-label">PPG (得分)</span>
+                <span class="stat-value">${player.ppg}</span>
+              </div>
+              <div class="stat-bar-container">
+                <div class="stat-bar-fill" style="width: ${ppgPercent}%; background-color: ${teamColor}"></div>
+              </div>
+            </div>
+            
+            <div class="stat-row">
+              <div class="stat-info">
+                <span class="stat-label">APG (助攻)</span>
+                <span class="stat-value">${player.assists}</span>
+              </div>
+              <div class="stat-bar-container">
+                <div class="stat-bar-fill" style="width: ${apgPercent}%; background-color: ${teamColor}"></div>
+              </div>
+            </div>
+
+            <div class="stat-row">
+              <div class="stat-info">
+                <span class="stat-label">SPG (抄截)</span>
+                <span class="stat-value">${player.steals}</span>
+              </div>
+              <div class="stat-bar-container">
+                <div class="stat-bar-fill" style="width: ${spgPercent}%; background-color: ${teamColor}"></div>
+              </div>
+            </div>
+
+            <div class="stat-row">
+              <div class="stat-info">
+                <span class="stat-label">BPG (阻攻)</span>
+                <span class="stat-value">${player.blocks}</span>
+              </div>
+              <div class="stat-bar-container">
+                <div class="stat-bar-fill" style="width: ${bpgPercent}%; background-color: ${teamColor}"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    `;
+    grid.insertAdjacentHTML('beforeend', cardHTML);
+  });
+}
+    const teamThemes = {
+  "Warriors": {
+    bg: "#1D428A",    // 深藍
+    accent: "#FFC72C"  // 金色
+  },
+  "Spurs": {
+    bg: "#000000",    // 黑色
+    accent: "#C4CED4"  // 銀灰色
+  },
+  "Nuggets": {
+    bg: "#0E2240",    // 金塊深藍
+    accent: "#FEC524"  // 金塊金
+  },
+  "Wolves": {
+    bg: "#0C2340",    // 灰狼深藍
+    accent: "#78BE20"  // 灰狼亮綠
+  },
+  "Default": {
+    bg: "#1d428a",
+    accent: "#ffffff"
+  }
+};
+  </script>
+
+</body>
+</html>
