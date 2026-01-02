@@ -625,5 +625,170 @@
     "steals": "0",
     "blocks": "0.4",
     "": ""
+  },
+  {
+    "name": "Shai Gilgeous-Alexander",
+    "team": "Thunder",
+    "position": "G",
+    "number": "2",
+    "ppg": "32.2",
+    "assists": "6.4",
+    "steals": "1.5",
+    "blocks": "0.7",
+    "": ""
+  },
+  {
+    "name": "Chet Holmgren",
+    "team": "Thunder",
+    "position": "C",
+    "number": "7",
+    "ppg": "18.5",
+    "assists": "1.6",
+    "steals": "0.5",
+    "blocks": "1.5",
+    "": ""
+  },
+  {
+    "name": "Jalen Williams",
+    "team": "Thunder",
+    "position": "G",
+    "number": "8",
+    "ppg": "17.5",
+    "assists": "4.4",
+    "steals": "1.6",
+    "blocks": "0.5",
+    "": ""
+  },
+  {
+    "name": "Isaiah Hartenstein",
+    "team": "Thunder",
+    "position": "C",
+    "number": "24",
+    "ppg": "11.2",
+    "assists": "3.4",
+    "steals": "1.1",
+    "blocks": "0.8",
+    "": ""
+  },
+  {
+    "name": "Aaron Wiggins",
+    "team": "Thunder",
+    "position": "G",
+    "number": "20",
+    "ppg": "10.8",
+    "assists": "2.2",
+    "steals": "0.6",
+    "blocks": "0.5",
+    "": ""
+  },
+  {
+    "name": "Isaiah Joe",
+    "team": "Thunder",
+    "position": "G",
+    "number": "24",
+    "ppg": "10.7",
+    "assists": "2.2",
+    "steals": "0.6",
+    "blocks": "0.2",
+    "": ""
+  },
+  {
+    "name": "Cason Wallace",
+    "team": "Thunder",
+    "position": "G",
+    "number": "22",
+    "ppg": "8.4",
+    "assists": "2.3",
+    "steals": "2.2",
+    "blocks": "0.5",
+    "": ""
+  },
+  {
+    "name": "Luguentz Dort",
+    "team": "Thunder",
+    "position": "G",
+    "number": "7",
+    "ppg": "8",
+    "assists": "2.7",
+    "steals": "1.9",
+    "blocks": "0.8",
+    "": ""
+  },
+  {
+    "name": "Alex Caruso",
+    "team": "Thunder",
+    "position": "G",
+    "number": "9",
+    "ppg": "6.2",
+    "assists": "2.5",
+    "steals": "2",
+    "blocks": "0.6",
+    "": ""
+  },
+  {
+    "name": "Ajay Mitchell",
+    "team": "Thunder",
+    "position": "G",
+    "number": "25",
+    "ppg": "5.3",
+    "assists": "1.9",
+    "steals": "1.8",
+    "blocks": "0.3",
+    "": ""
+  },
+  {
+    "name": "Kenrich Williams",
+    "team": "Thunder",
+    "position": "G",
+    "number": "16",
+    "ppg": "4.6",
+    "assists": "1.7",
+    "steals": "0.7",
+    "blocks": "0.7",
+    "": ""
+  },
+  {
+    "name": "Ousmane Dieng",
+    "team": "Thunder",
+    "position": "F",
+    "number": "13",
+    "ppg": "4.9",
+    "assists": "1.8",
+    "steals": "0.6",
+    "blocks": "0.3",
+    "": ""
+  },
+  {
+    "name": "Brooks Barnhizer",
+    "team": "Thunder",
+    "position": "F",
+    "number": "23",
+    "ppg": "0.9",
+    "assists": "1.3",
+    "steals": "1",
+    "blocks": "0.3",
+    "": ""
+  },
+  {
+    "name": "Branden Carlson",
+    "team": "Thunder",
+    "position": "C",
+    "number": "15",
+    "ppg": "4.7",
+    "assists": "4.8",
+    "steals": "0.7",
+    "blocks": "2.4",
+    "": ""
+  },
+  {
+    "name": "Chris Youngblood",
+    "team": "Thunder",
+    "position": "G",
+    "number": "3",
+    "ppg": "1.6",
+    "assists": "0.3",
+    "steals": "0",
+    "blocks": "0",
+    "": ""
   }
 ]
